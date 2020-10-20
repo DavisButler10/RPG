@@ -19,4 +19,5 @@ public class GameUI : MonoBehaviour
     {
         goldText.text = "<b>Gold:</b> " + gold;
     }
+
 }

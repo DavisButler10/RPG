@@ -9,9 +9,15 @@ public class EnemySpawner : MonoBehaviourPun
     public float maxEnemies;
     public float spawnRadius;
     public float spawnCheckTime;
+    public bool isNearPlayer = false;
 
     private float lastSpawnCheckTime;
     private List<GameObject> curEnemies = new List<GameObject>();
+
+    private void Start()
+    {
+        gameObject.GetComponent<CircleCollider2D>().radius = spawnRadius;
+    }
 
     // Update is called once per frame
     void Update()
@@ -40,8 +46,26 @@ public class EnemySpawner : MonoBehaviourPun
             return;
 
         // otherwise, spawn an enemy
-        Vector3 randomInCircle = Random.insideUnitCircle * spawnRadius;
-        GameObject enemy = PhotonNetwork.Instantiate(enemyPrefabPath, transform.position + randomInCircle, Quaternion.identity);
-        curEnemies.Add(enemy);
+        if (isNearPlayer)
+        {
+            Vector3 randomInCircle = Random.insideUnitCircle * spawnRadius;
+            GameObject enemy = PhotonNetwork.Instantiate(enemyPrefabPath, transform.position + randomInCircle, Quaternion.identity);
+            curEnemies.Add(enemy);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
+        {
+            isNearPlayer = true;
+        }
+        else
+        {
+            isNearPlayer = false;
+        }
     }
 }
+
+
+

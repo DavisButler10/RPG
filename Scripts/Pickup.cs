@@ -22,7 +22,7 @@ public class Pickup : MonoBehaviourPun
         if (collision.CompareTag("Player"))
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-
+            gameObject.GetComponent<PhotonView>().TransferOwnership(player.id);
             if (type == PickupType.Gold)
                 player.photonView.RPC("GiveGold", player.photonPlayer, value);
             else if (type == PickupType.Health)
@@ -35,6 +35,6 @@ public class Pickup : MonoBehaviourPun
     [PunRPC]
     public void DestroyPickup()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 
 public class Enemy : MonoBehaviourPun
 {
@@ -23,6 +24,8 @@ public class Enemy : MonoBehaviourPun
 
     public string objectToSpawnOnDeath;
 
+    public bool insideAlterRange;
+
     [Header("Attack")]
     public int damage;
     public float attackRate;
@@ -32,6 +35,7 @@ public class Enemy : MonoBehaviourPun
     public HeaderInfo healthBar;
     public SpriteRenderer sr;
     public Rigidbody2D rig;
+
 
     // Start is called before the first frame update
     void Start()
@@ -132,9 +136,27 @@ public class Enemy : MonoBehaviourPun
     void Die()
     {
         if (objectToSpawnOnDeath != string.Empty)
+        {
             PhotonNetwork.Instantiate(objectToSpawnOnDeath, transform.position, Quaternion.identity);
+            if (insideAlterRange)
+            {
+                PhotonNetwork.Instantiate("Soul", transform.position, Quaternion.identity);
+            }
+        }
 
         // destroy the object across the network
         PhotonNetwork.Destroy(gameObject);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Alter")
+        {
+            insideAlterRange = true;
+        }
+        else
+        {
+            insideAlterRange = false;
+        }
     }
 }

@@ -32,12 +32,6 @@ public class PlayerController : MonoBehaviourPun
     // local player
     public static PlayerController me;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -55,6 +49,7 @@ public class PlayerController : MonoBehaviourPun
             weaponAnim.transform.parent.localScale = new Vector3(1, 1, 1);
         else
             weaponAnim.transform.parent.localScale = new Vector3(-1, 1, 1);
+        
     }
 
     void Move()
@@ -70,6 +65,46 @@ public class PlayerController : MonoBehaviourPun
     // melee attacks towards the mouse
     void Attack()
     {
+        
+        if (Weapons.instance.weaponSprite.sprite != null)
+        {
+            
+            if (Weapons.instance.weaponSprite.sprite == Weapons.instance.woodenSword)
+            {
+                Debug.Log("R");
+                attackRange = 1;
+                attackRate = 0.2f;
+                damage = 10;
+            }
+            else if (Weapons.instance.weaponSprite.sprite == Weapons.instance.bronzeSword)
+            {
+                Debug.Log("R");
+                attackRange = 1.2f;
+                attackRate = 0.2f;
+                damage = 12;
+            }
+            else if (Weapons.instance.weaponSprite.sprite == Weapons.instance.silverSword)
+            {
+                Debug.Log("R");
+                attackRange = 1.4f;
+                attackRate = 0.3f;
+                damage = 14;
+            }
+            else if (Weapons.instance.weaponSprite.sprite == Weapons.instance.goldenSword)
+            {
+                Debug.Log("R");
+                attackRange = 1.6f;
+                attackRate = 0.3f;
+                damage = 16;
+            }
+            else if (Weapons.instance.weaponSprite.sprite == Weapons.instance.diamondSword)
+            {
+                Debug.Log("R");
+                attackRange = 2;
+                attackRate = 0.5f;
+                damage = 20;
+            }
+        }
         lastAttackTime = Time.time;
 
         // calculate the direction
@@ -93,6 +128,26 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void TakeDamage(int damage)
     {
+        if (Weapons.instance.shieldSprite.sprite == Weapons.instance.woodenShield)
+        {
+            damage = (damage - 0);
+        }
+        else if (Weapons.instance.shieldSprite.sprite == Weapons.instance.bronzeShield)
+        {
+            damage = (damage - 2);
+        }
+        else if (Weapons.instance.shieldSprite.sprite == Weapons.instance.silverShield)
+        {
+            damage = (damage - 4);
+        }
+        else if (Weapons.instance.shieldSprite.sprite == Weapons.instance.goldenShield)
+        {
+            damage = (damage - 5);
+        }
+        else if (Weapons.instance.shieldSprite.sprite == Weapons.instance.diamondShield)
+        {
+            damage = (damage - 10);
+        }
         curHp -= damage;
 
         // update the health bar
@@ -167,6 +222,15 @@ public class PlayerController : MonoBehaviourPun
     void GiveGold(int goldToGive)
     {
         gold += goldToGive;
+
+        // update the ui
+        GameUI.instance.UpdateGoldText(gold);
+    }
+
+    [PunRPC]
+    void TakeGold(int goldToTake)
+    {
+        gold -= goldToTake;
 
         // update the ui
         GameUI.instance.UpdateGoldText(gold);
